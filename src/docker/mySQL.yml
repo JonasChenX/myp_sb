@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  myp:
+    image: mysql:8
+    environment:
+      MYSQL_USER: Jonas
+      MYSQL_PASSWORD: 12345
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: myp
+    ports:
+      - 3306:3306
+    command:
+      # 將 MySQL 8.0 預設的密碼修改回原本的（MySQL 8.0 對預設做了更改，可能會導致密碼無法匹配）。
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    volumes:
+      # 會初始化資料庫資料
+      - ../datasource/dw:/docker-entrypoint-initdb.d/
