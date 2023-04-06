@@ -31,4 +31,9 @@ public class Resources {
             throw new RuntimeException();
         }
     }
+
+    public InputStream getResourceInputStream(String location) throws IOException {
+        Resource resource = resourceLoader.getResource(location);
+        return resource.getInputStream();
+    }
 }
