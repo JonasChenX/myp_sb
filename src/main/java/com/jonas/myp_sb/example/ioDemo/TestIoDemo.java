@@ -1,5 +1,6 @@
 package com.jonas.myp_sb.example.ioDemo;
 
+import com.jonas.myp_sb.annotation.LogAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ public class TestIoDemo {
     private IoDemoService ioDemoService;
 
     @GetMapping("/readText")
+    @LogAnnotation(methodName = "讀取文件資料")
     public String readText() {
         String result = ioDemoService.readText();
         return result;
