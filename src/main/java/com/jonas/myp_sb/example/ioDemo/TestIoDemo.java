@@ -1,7 +1,10 @@
 package com.jonas.myp_sb.example.ioDemo;
 
 import com.jonas.myp_sb.annotation.LogAnnotation;
+import com.jonas.myp_sb.example.exception.SystemException;
+import com.jonas.myp_sb.example.responseResult.HttpCodeEnum;
 import com.jonas.myp_sb.example.responseResult.ResponseResult;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+
 
 @RestController
 public class TestIoDemo {
@@ -29,6 +35,19 @@ public class TestIoDemo {
      * **/
     @GetMapping("/readText2")
     public ResponseResult<String> readText2() {
+        String result = ioDemoService.readText();
+        return ResponseResult.success(result);
+    }
+
+    /**
+     * 該方法會報錯
+     * 藉由GlobalExceptionHandler物件統一異常處理
+     * **/
+    @GetMapping("/readText3")
+    public ResponseResult<String> readText3() {
+        HashMap<String, String> objectObjectHashMap = new HashMap<>();
+        String ad = objectObjectHashMap.get("ad");
+        ad.split(",");
         String result = ioDemoService.readText();
         return ResponseResult.success(result);
     }
