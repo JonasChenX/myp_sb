@@ -4,4 +4,6 @@ import java.util.Map;
 
 public interface LoginService {
     Map<String, String> login(User user);
+
+    String logout();
 }

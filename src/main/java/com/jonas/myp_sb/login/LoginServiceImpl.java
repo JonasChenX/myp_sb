@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -50,5 +51,16 @@ public class LoginServiceImpl implements LoginService{
         result.put("token",jwt);
 
         return result;
+    }
+
+    @Override
+    public String logout() {
+        //獲取SecurityContextHolder中的用戶id
+        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long userId = loginUser.getUser().getId();
+        //刪除redis中的值
+        redisCache.deleteObject("login:"+userId);
+        return "登出成功";
     }
 }
