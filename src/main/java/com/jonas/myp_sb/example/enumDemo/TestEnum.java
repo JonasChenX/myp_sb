@@ -32,6 +32,16 @@ public class TestEnum {
         System.out.println(baseEnum.getTitle());
     }
 
+    @Test
+    public void baseEnumMainTest(){
+        BaseEnum baseEnum = BaseEnum.valueOf(EnumMain.class, 1);
+        EnumMain enumMain = (EnumMain) baseEnum;
+        List<OptionVo<Integer>> options = BaseEnum.getOptions(enumMain.getEnumClass());
+        Map<Integer, String> enumMap = BaseEnum.getEnumMap(enumMain.getEnumClass());
+        System.out.println(options);
+        System.out.println(enumMap);
+    }
+
 
 
     /**
@@ -50,6 +60,5 @@ public class TestEnum {
                 .collect(Collectors.toList());
 
         System.out.println(seasonList);
-
     }
 }

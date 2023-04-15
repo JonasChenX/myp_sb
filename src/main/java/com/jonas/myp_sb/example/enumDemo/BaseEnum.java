@@ -1,5 +1,10 @@
 package com.jonas.myp_sb.example.enumDemo;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public interface BaseEnum {
 
     Integer getValue();
@@ -25,4 +30,37 @@ public interface BaseEnum {
         }
         return null;
     }
+
+    /**
+     * 獲取該枚舉類轉成Map
+     * @param enumClass
+     * @return
+     */
+    static Map<Integer, String> getEnumMap(Class<? extends BaseEnum> enumClass){
+        BaseEnum[] enumConstants = enumClass.getEnumConstants();
+        if(enumConstants != null && enumConstants.length >0){
+            return Arrays.stream(enumConstants)
+                    .collect(Collectors.toMap(BaseEnum::getValue, BaseEnum::getTitle));
+        }
+        return null;
+    }
+
+    /**
+     * 獲取該枚舉類轉成OptionVo物件
+     * @param enumClass
+     * @return
+     */
+    static List<OptionVo<Integer>> getOptions(Class<? extends BaseEnum> enumClass) {
+        BaseEnum[] enumConstants = enumClass.getEnumConstants();
+        if (enumConstants != null && enumConstants.length > 0) {
+            return Arrays.stream(enumConstants).map(enumC ->
+                    OptionVo.<Integer>builder()
+                            .label(enumC.getTitle())
+                            .value(enumC.getValue())
+                            .build()
+            ).collect(Collectors.toList());
+        }
+        return null;
+    }
+
 }
