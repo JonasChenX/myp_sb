@@ -24,6 +24,16 @@ public class TestEnum {
         }
     }
 
+
+    @Test
+    public void baseEnumTest(){
+        //指定枚舉類依照value查出對應的內容
+        BaseEnum baseEnum = BaseEnum.valueOf(CheckStatusEnum.class, 1);
+        System.out.println(baseEnum.getTitle());
+    }
+
+
+
     /**
      * 將Code轉換成Season名稱
      * **/
