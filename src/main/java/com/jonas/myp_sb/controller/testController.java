@@ -10,10 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class testController {
 
-    @GetMapping("/test")
+    @GetMapping("/test1")
     @LogAnnotation(methodName = "測試")
-    @PreAuthorize("hasAuthority('test')")
-    public ResponseResult test(){
+    @PreAuthorize("hasAuthority('system:dept:list')")
+    public ResponseResult test1(){
+        //登入
+        return  new ResponseResult(HttpCodeEnum.SUCCESS,"測試成功");
+    }
+
+    @GetMapping("/test2")
+    @LogAnnotation(methodName = "測試")
+    @PreAuthorize("hasAuthority('system:test:list')")
+    public ResponseResult test2(){
         //登入
         return  new ResponseResult(HttpCodeEnum.SUCCESS,"測試成功");
     }

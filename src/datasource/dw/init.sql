@@ -48,6 +48,9 @@ CREATE TABLE `sys_menu` (
     PRIMARY KEY (`id`)
 ) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='菜單表';
 
+INSERT INTO myp.sys_menu (id, menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, del_flag, remark) VALUES (1, '部門管理', 'dept', 'system/dept/index', '0', '0', 'system:dept:list', '#', null, null, null, null, 0, null);
+INSERT INTO myp.sys_menu (id, menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, del_flag, remark) VALUES (2, '測試', 'test', 'system/test/index', '0', '0', 'system:test:list', '#', null, null, null, null, 0, null);
+
 --角色表
 CREATE TABLE `sys_role` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '主鍵',
@@ -63,6 +66,8 @@ CREATE TABLE `sys_role` (
     PRIMARY KEY (`id`)
 ) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 
+INSERT INTO myp.sys_role (id, name, role_key, status, create_by, create_time, update_by, update_time, del_flag, remark) VALUES (1, 'CEO', 'ceo', '0', null, null, null, null, 0, null);
+
 --角色and菜單 表
 CREATE TABLE `sys_role_menu` (
     `role_id` BIGINT(200) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
@@ -70,9 +75,13 @@ CREATE TABLE `sys_role_menu` (
     PRIMARY KEY (`role_id`,`menu_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO myp.sys_role_menu (role_id, menu_id) VALUES (1, 1);
+
 --使用者and角色 表
 CREATE TABLE `sys_user_role` (
     `user_id` BIGINT(200) NOT NULL AUTO_INCREMENT COMMENT '用戶ID',
     `role_id` BIGINT(200) NOT NULL DEFAULT '0' COMMENT '角色ID',
     PRIMARY KEY (`user_id`,`role_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO myp.sys_user_role (user_id, role_id) VALUES (1, 1);

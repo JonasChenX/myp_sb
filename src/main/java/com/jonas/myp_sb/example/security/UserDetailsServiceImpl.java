@@ -3,17 +3,18 @@ package com.jonas.myp_sb.example.security;
 import com.jonas.myp_sb.login.LoginUser;
 import com.jonas.myp_sb.login.User;
 import com.jonas.myp_sb.login.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
@@ -29,9 +30,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new RuntimeException("帳號或密碼錯誤");
         }
         //查詢對應的權限訊息
-        ArrayList<String> arrayList = new ArrayList<>(Arrays.asList("test","admin"));
+        List<Map<String, Object>> userAndMenu = userRepository.findByIdJoinRoleAndUserAndMenu(user.getId());
+        List<String> permsList = userAndMenu.stream().map(row -> (String) row.get("perms")).collect(Collectors.toList());
+        log.info("權限:"+permsList);
 
         //把資料封裝成UserDetails返回
-        return new LoginUser(user, arrayList);
+        return new LoginUser(user, permsList);
     }
 }
