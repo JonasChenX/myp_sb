@@ -62,6 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 //配置授權異常處理器
                 .accessDeniedHandler(accessDeniedHandler);
+
+        //充許cors
+        http.cors();
     }
 
 }
