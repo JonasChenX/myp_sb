@@ -25,4 +25,12 @@ public class testController {
         //登入
         return  new ResponseResult(HttpCodeEnum.SUCCESS,"測試成功");
     }
+
+    @GetMapping("/test3")
+    @LogAnnotation(methodName = "測試")
+    @PreAuthorize("@SG.hasAuthority('system:dept:list')")
+    public ResponseResult test3(){
+        //登入
+        return  new ResponseResult(HttpCodeEnum.SUCCESS,"測試成功");
+    }
 }
