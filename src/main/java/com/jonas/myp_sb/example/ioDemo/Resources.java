@@ -1,5 +1,6 @@
 package com.jonas.myp_sb.example.ioDemo;
 
+import com.jonas.myp_sb.example.query.Query;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,21 @@ public class Resources {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+    }
+
+    /**
+     * 讀取SQL轉Query物件進行操作
+     * @param location SQL檔路徑
+     * @param parameters 帶入參數
+     * @return
+     */
+    public Query readAsQuery(String location, Object... parameters) {
+        return readAsQueryBuilder(location, parameters).build();
+    }
+
+    public Query.Builder readAsQueryBuilder(String location, Object... parameters) {
+        String string = readAsString(location);
+        return Query.builder(string, parameters);
     }
 
     /**
