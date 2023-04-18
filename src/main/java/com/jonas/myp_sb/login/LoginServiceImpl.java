@@ -1,7 +1,9 @@
 package com.jonas.myp_sb.login;
 
 import com.jonas.myp_sb.example.Jwt.JwtUtil;
+import com.jonas.myp_sb.example.exception.BusinessException;
 import com.jonas.myp_sb.example.redis.RedisCache;
+import com.jonas.myp_sb.example.responseResult.HttpCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,7 +35,7 @@ public class LoginServiceImpl implements LoginService{
             authenticate = authenticationManager.authenticate(authenticationToken);
         }catch (BadCredentialsException ex) {
             // 密碼錯誤，處理方式
-            throw new RuntimeException("登入失敗");
+            throw new BusinessException(HttpCodeEnum.LOGIN_ERROR);
         }catch (LockedException ex) {
             // 帳號被鎖定，處理方式
         }

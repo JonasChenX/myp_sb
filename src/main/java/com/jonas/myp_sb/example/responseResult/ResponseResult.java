@@ -21,6 +21,11 @@ public class ResponseResult<T> implements Serializable {
         this.data = data;
     }
 
+    public ResponseResult(Integer code,String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     public static <T> ResponseResult<T> success(T data) {
         ResponseResult<T> responseResult = new ResponseResult<>();
         responseResult.setData(data);

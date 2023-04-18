@@ -1,5 +1,7 @@
 package com.jonas.myp_sb.example.security;
 
+import com.jonas.myp_sb.example.exception.BusinessException;
+import com.jonas.myp_sb.example.responseResult.HttpCodeEnum;
 import com.jonas.myp_sb.login.LoginUser;
 import com.jonas.myp_sb.login.User;
 import com.jonas.myp_sb.login.UserRepository;
@@ -27,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByUserName(userName);
         //如果沒有查到用戶名則拋出異常
         if(Objects.isNull(user)){
-            throw new RuntimeException("帳號或密碼錯誤");
+            throw new BusinessException(HttpCodeEnum.LOGIN_ERROR);
         }
         //查詢對應的權限訊息
         List<Map<String, Object>> userAndMenu = userRepository.findByIdJoinRoleAndUserAndMenu(user.getId());
