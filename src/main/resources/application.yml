@@ -1,0 +1,28 @@
+name: JJJ
+
+yml:
+  lastName: JC
+  age: 99
+  isBoss: true
+  birthday: 2023/01/01
+  map:
+    name: AA
+    age: 1
+  map2: {name: BB, age: 2}
+  list:
+    - name: 小白
+      age: 3
+    - name: 小黑
+      age: 4
+    - {name: 小藍, age: 5}
+  dog:
+    name: 小紅
+    age: 86
+  arr:
+    - A
+    - B
+    - C
+  arr2: [Z,X]
+  dogMap:
+    a: {name: 阿白, age: 23}
+    b: {name: 阿黑, age: 25}
