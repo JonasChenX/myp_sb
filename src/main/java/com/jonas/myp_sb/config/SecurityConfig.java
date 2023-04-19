@@ -41,6 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        /**
+         * CSRF指跨站請求偽造(Cross-site request forgery) 攻擊手段
+         * 禁用CSRF不是因为不用解决 CSRF，而是因为服務端無法簡單地透過 CSRF() 配置注入表單驗證欄位。開啟也無意義。
+         * */
+
         http
                 //關閉csrf
                 .csrf().disable()
