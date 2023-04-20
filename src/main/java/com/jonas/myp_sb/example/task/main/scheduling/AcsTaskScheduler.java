@@ -106,6 +106,7 @@ public class AcsTaskScheduler {
         taskDetail.setType(workerName);
         taskDetail.setDescription(description);
         taskDetail.setDeleteMk("N");
+        System.err.println(taskDetail.toString());
 
         taskDetail = taskDetailsService.save(taskDetail);
         Long taskId = taskDetail.getTaskId();
@@ -119,6 +120,7 @@ public class AcsTaskScheduler {
 
         final TaskDetailsTask task = taskMapper.form(taskDetail);
         task.setJobId(uuid.toString());
+
         return task;
     }
 

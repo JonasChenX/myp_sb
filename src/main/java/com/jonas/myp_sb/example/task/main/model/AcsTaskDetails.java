@@ -18,14 +18,15 @@ import java.util.Set;
 import static java.lang.String.format;
 
 @ToString
+@Entity
+@Table(name = "worker_task_detail")
 public class AcsTaskDetails implements Serializable {
     public static final int TYPE_LENGTH_LIMIT = 32;
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acsTaskDetailGenerator")
-    @SequenceGenerator(name = "acsTaskDetailGenerator", sequenceName = "sts_acs_task_detail_pk_seq", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long taskId;
 
     @Size(max = 36)
@@ -47,7 +48,6 @@ public class AcsTaskDetails implements Serializable {
     private String message;
 
     @NotNull
-    @Size(max = 8)
     @Column(name = "committer", length = 8, nullable = false)
     private String committer;
 
