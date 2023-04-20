@@ -18,7 +18,7 @@ public class ScheduledDemo {
      * cron：Cron 表達式。使用 Cron 表達式設置任務的運行時間。例如：@Scheduled(cron = "0 0 12 * * ?") 表示在每天的中午 12 點執行任務。
      * */
 
-    @Scheduled(initialDelay = 1000, fixedRate = 5000) //Spring啟動後1秒過後執行
+//    @Scheduled(initialDelay = 1000, fixedRate = 5000) //Spring啟動後1秒過後執行
     public void doTask1() {
         System.out.println("每五秒執行一次");
     }
