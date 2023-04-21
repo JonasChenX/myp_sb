@@ -32,7 +32,7 @@ public class ReportModuleModelWorker extends AbstractDataLogTaskWorker {
     // to do -> 1
     @Override
     public void persistParameter(long taskId, TaskParameter parameter) {
-        System.err.println("AAAAA");
+        log.info("1.persistParameter");
         log.info("TaskParameter --> " + parameter.toString());
         ReportModuleModelTaskParameter reportModuleModelPBITaskParameter = (ReportModuleModelTaskParameter) parameter;
         reportModuleModelPBITaskParameter.setTaskId(taskId);
@@ -43,20 +43,21 @@ public class ReportModuleModelWorker extends AbstractDataLogTaskWorker {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public TaskParameter retrieveParameter(long taskId) {
-        System.err.println("BBBBB");
+        log.info("2.retrieveParameter");
         return acsModelParameterRepository.findById(taskId).orElse(null);
     }
 
     // 3
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public TaskResult performWorker(long taskId, TaskParameter parameter) throws Exception {
-        System.err.println("CCCCC");
+        log.info("3.performWorker");
         AcsModelResult reportModuleModelResult = new AcsModelResult();
         reportModuleModelResult.setModelType("2");
         reportModuleModelResult.setResultCount(Float.valueOf(3));
         reportModuleModelResult.setResultPage("4");
         reportModuleModelResult.setParameterDetail("5");
-        reportModuleModelResult.setTaskId(Long.valueOf(3));
+        reportModuleModelResult.setTaskId(taskId);
         reportModuleModelResult.setTaxpayerList("9");
 
         return reportModuleModelResult;
@@ -65,7 +66,8 @@ public class ReportModuleModelWorker extends AbstractDataLogTaskWorker {
     // 4
     @Override
     public void persistResult(long taskId, TaskResult result) {
-        System.out.println("-----------AAAAAAAAAAAA------------------");
+        log.info("4.persistResult");
+        acsModelResultRepository.saveAndFlush((AcsModelResult) result);
     }
 
     @Override

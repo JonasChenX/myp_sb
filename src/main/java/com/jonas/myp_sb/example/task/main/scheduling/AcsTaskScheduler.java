@@ -92,7 +92,7 @@ public class AcsTaskScheduler {
     private void persistParameter(Task task, TaskParameter parameter) {
         final TaskWorker worker = taskWorkerRepository.getWorkerInstance(task.getType());
         worker.persistParameter(task.getTaskId(), parameter);
-        log.debug("Parameter of task {} has been persistent.", task.getTaskId());
+        log.info("Parameter of task {} has been persistent.", task.getTaskId());
     }
 
     private TaskDetailsTask persistentDetailAndEnqueueJob(String committer, TaskParameter parameter, String description, String modelId) {
@@ -106,14 +106,14 @@ public class AcsTaskScheduler {
         taskDetail.setType(workerName);
         taskDetail.setDescription(description);
         taskDetail.setDeleteMk("N");
-        System.err.println(taskDetail.toString());
 
         taskDetail = taskDetailsService.save(taskDetail);
+        log.info("創建一筆AcsTaskDetails:{}",taskDetail);
+
         Long taskId = taskDetail.getTaskId();
         if (taskId == null) {
             throw new RuntimeException("取得 taskId 時發生錯誤，請確認資料表 SEQUENCE 設定正確");
         }
-        log.info("TaskDetail created: " + taskDetail);
 
         UUID uuid = enqueue(taskDetail.getTaskId());
         log.info("Task {} enqueued as job {}.", taskDetail.getTaskId(), uuid);

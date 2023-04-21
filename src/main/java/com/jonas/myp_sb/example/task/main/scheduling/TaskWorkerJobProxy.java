@@ -29,6 +29,7 @@ public class TaskWorkerJobProxy {
 //            jobFilters = { TaskDetailClientFilter.class, TaskDetailApplyStateFilter.class }
 //    )
     public void perform(long taskId, JobContext jobContext) throws Exception {
+        System.err.println("77777777777");
         AcsTaskDetails detail = this.acsTaskDetailsService.findById(taskId);
 
         String workerName = detail.getType();
@@ -41,15 +42,18 @@ public class TaskWorkerJobProxy {
         try {
             // 取得參數
             assertNotInterrupted("作業在取得參數前已被中斷");
+            log.info("取得參數");
             TaskParameter parameter = taskWorker.retrieveParameter(taskId);
             context.setParameter(parameter);
 
             // 執行作業
             assertNotInterrupted("作業在執行前已被中斷");
+            log.info("執行作業");
             TaskResult result = taskWorker.perform(taskId, parameter);
             context.setResult(result);
 
             // 儲存結果
+            log.info("儲存結果");
             assertNotInterrupted("作業在儲存結果前已先被中斷");
             taskWorker.persistResult(taskId, result);
         } catch (InterruptedException e) {
@@ -71,6 +75,7 @@ public class TaskWorkerJobProxy {
                 taskWorker.cleanUp(taskId);
             } finally {
                 try {
+                    log.info("儲存detail:{}",detail);
                     acsTaskDetailsService.save(detail);
                 } finally {
                     if (taskWorker instanceof TaskContextAware) {
