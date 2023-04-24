@@ -1,0 +1,26 @@
+{
+  "model": {
+    "orgCd": [
+      "A07"
+    ],
+    "taxRtnTp": ["5", "6"],
+    "dataYr": "109",
+    "saleAmtTotalStart": null,
+    "saleAmtTotalEnd": null,
+    "capitalStart": null,
+    "capitalEnd": null,
+    "zapShRefStart": 26,
+    "zapShRefEnd": 26,
+    "stkLstOtcMk": null,
+    "trdRnk": "2",
+    "ttlBusiCnt": "5",
+    "ttlSSaleAmt": 100,
+    "orgnTp": "N",
+    "isStkPblcMk": "",
+    "isIncmStdMk": "",
+    "isNGoodMk": "",
+    "isGoodMk": "",
+    "isAplRglr": "",
+    "isClsMk": ""
+  }
+}
