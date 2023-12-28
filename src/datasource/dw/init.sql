@@ -6,3 +6,12 @@ CREATE TABLE myp.demo_test (
    data_update_time timestamp NOT NULL,
    json_data text
 );
+
+CREATE TABLE myp.myp_meta_dtl_tbl (
+   id int,
+   job_nm text,
+   col_nm text,
+   col_data_type text,
+   col_desc text,
+   seq_no int
+);
