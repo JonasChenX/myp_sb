@@ -1,7 +1,6 @@
 package com.jonas.myp_sb.example.ods;
 
-import com.github.miachm.sods.Sheet;
-import com.github.miachm.sods.SpreadSheet;
+import com.github.miachm.sods.*;
 import com.jonas.myp_sb.annotation.LogAnnotation;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +20,15 @@ public class OdsDemo {
         SpreadSheet spread = new SpreadSheet();
 
         List<Map<String, Object>> dataList = List.of(
-                Map.of("統一編號", "2333344", "營業人名稱", "aaaaa", "機關代號", "a"),
-                Map.of("統一編號", "999999", "營業人名稱", "888888", "機關代號", "c")
+                Map.of("col1", "2333344", "col2", "先生公司", "col3", "a"),
+                Map.of("col1", "999999", "col2", "先生公司2", "col3", "c")
         );
 
-        List<String> keyList = List.of("機關代號", "營業人名稱", "統一編號");
+        List<String> keyList = List.of("col1", "col2", "col3");
 
         Sheet sheet = setSheet(dataList,keyList, "選案模型選案列選清單_0");
+
+
         spread.appendSheet(sheet);
 
         // Save the spreadsheet to a ByteArrayOutputStream
@@ -52,6 +53,7 @@ public class OdsDemo {
      * @return Sheet物件
      */
     private Sheet setSheet(List<Map<String, Object>> dataList, List<String> keyList, String sheetName) {
+        //添加column 和 data
         ArrayList<Object> bodyArr = new ArrayList<>(keyList);
         //新增sheet
         dataList.forEach(map1 -> {
@@ -63,19 +65,51 @@ public class OdsDemo {
         int rows = dataList.size() + 1;
         int columns = keyList.size();
         Sheet sheet = new Sheet(sheetName, rows, columns);
-
         sheet.getDataRange().setValues(bodyArr.toArray());
-        sheet.getRange(0, 0, 0, 1).setFontBold(true);
 
-        /*
-        加在第一欄位
-         */
+        //加在第一欄位
         sheet.insertRowBefore(0);
         ArrayList<String> headerArr = new ArrayList<>();
-        headerArr.add("機密等級: 密");
-        sheet.getRange(0, columns - 1).setValues(headerArr.toArray());
-        sheet.getRange(0, 0, 0, 1).setFontBold(true);
-        sheet.setRowHeight(sheet.getLastRow() - 2, 4.0D);
+        headerArr.add("test");
+        sheet.getRange(0, 0).setValues(headerArr.toArray());
+
+        //處理第一個row
+        //getRange 的參數(起始row,起始column,數量row,數量colum)
+        Range headerRange = sheet.getRange(0, 0, 1, columns);
+        //合併儲存格
+        headerRange.merge();
+        //文字 左右上下置中
+        Style styleByText = new Style();
+        styleByText.setTextAligment(Style.TEXT_ALIGMENT.Center);
+        styleByText.setVerticalTextAligment(Style.VERTICAL_TEXT_ALIGMENT.Middle);
+        headerRange.setStyle(styleByText);
+
+        //處理第二個row
+        Range columnRange = sheet.getRange(1, 0, 1, columns);
+        //變粗體 中文沒有支援
+        columnRange.setStyle(styleByText);
+        columnRange.setFontBold(true);
+
+        //處理第三個row之後
+        Range dataRange = sheet.getRange(2, 0, rows - 1, columns);
+        //設定border
+        Style styleByBorders = new Style();
+        Borders borders = new Borders();
+        borders.setBorder(true);
+        borders.setBorderProperties("0.035cm solid #616f71 ");
+        styleByBorders.setBorders(borders);
+        dataRange.setStyle(styleByBorders);
+
+        //設定高度(第一個row)
+        sheet.setRowHeights(0,1,12D);
+        //設定高度(第二個row之後)
+        sheet.setRowHeights(1,rows,8D);
+        //設定寬度
+        sheet.setColumnWidths(0, columns, 50D);
+
+
+        // 針對 儲存格的設定文件參考
+        // https://miachm.github.io/SODS/com/github/miachm/sods/Range.html
 
         return sheet;
     }
