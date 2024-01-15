@@ -1,0 +1,67 @@
+<configuration scan="true">
+    <!--
+    環境分成dev test prod
+        共通:
+            紀錄全部log到 /data/aplog/${spring.application.name}/ap.log
+        dev和test:
+            每日log 紀錄全部到 logs/ap_%d{yyyy-MM-dd}.log
+        prod:
+            每日log 只記錄ERROR到 logs/ap_error_%d{yyyy-MM-dd}.log
+    -->
+
+    <!-- 添加預設設定 否則會直接覆蓋 -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- 定義變數 -->
+    <springProperty scope="context" name="appname" source="spring.application.name"/>
+    <springProperty scope="context" name="serverport" source="server.port"/>
+    <springProperty scope="context" name="activeProfiles" source="spring.profiles.active" />
+
+    <!-- 測試環境 多個用,分開 -->
+    <springProfile name="test,dev">
+        <appender name="apLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- 定義文件路徑 -->
+                <fileNamePattern>logs/ap_%d{yyyy-MM-dd}.log</fileNamePattern>
+                <!-- 只保留最近30天 -->
+                <maxHistory>30</maxHistory>
+                <!--文件上限大小，到了上限會刪除-->
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+            <!-- 出輸格式化 -->
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%d [%thread] %-5level [%logger{36} %line] %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="${logging.level.root}">
+            <appender-ref ref="apLog"/>
+        </root>
+    </springProfile>
+
+
+    <springProfile name="prod">
+        <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 如果只要ERROR級別的log 要用過濾的方式 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>Error</level>
+            </filter>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- 定義文件路徑 -->
+                <FileNamePattern>logs/ap_error_%d{yyyy-MM-dd}.log</FileNamePattern>
+                <!-- 只保留最近30天 -->
+                <maxHistory>30</maxHistory>
+                <!--文件上限大小，到了上限會刪除-->
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+            <!-- 出輸格式化 -->
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="${logging.level.root}">
+            <appender-ref ref="fileErrorLog"/>
+        </root>
+    </springProfile>
+</configuration>
