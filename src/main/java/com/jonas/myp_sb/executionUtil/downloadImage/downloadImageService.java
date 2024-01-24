@@ -1,4 +1,4 @@
-package com.jonas.myp_sb.downloadImage;
+package com.jonas.myp_sb.executionUtil.downloadImage;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,6 +6,11 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class downloadImageService {
+
+    /**
+     * 下載漫畫功能
+     * (需要是連號)
+     */
 
     //讀取網頁圖片「流水號前面的網址」
     static String  URL_PRE = "";

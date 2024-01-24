@@ -1,4 +1,4 @@
-package com.jonas.myp_sb.autoCheckIn;
+package com.jonas.myp_sb.executionUtil.autoCheckIn;
 
 import com.jonas.myp_sb.example.mail.MailService;
 import com.jonas.myp_sb.example.playwright.PlaywrightService;
@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 public class AutoCheckMain {
+
+    /**
+     * 自動打卡功能
+     */
 
     private final Logger log = LoggerFactory.getLogger(AutoCheckMain.class);
 
@@ -36,6 +40,7 @@ public class AutoCheckMain {
 
     String USER_ID = "";
     String PWD = "";
+    String EMAIL = "";
 
 //    @Scheduled(cron = "0 00 08 ? * *") // 每天觸發一次
     public void autoCheckIn() throws InterruptedException {
@@ -54,7 +59,7 @@ public class AutoCheckMain {
                     boolean isNo = response.text().contains("驗證碼錯誤");
                     if(isNo){
                         log.error("自動系統 - 簽到失敗");
-                        mailService.sendSimpleMail("@gmail.com",
+                        mailService.sendSimpleMail(EMAIL,
                                 "自動系統 - 簽到失敗",
                                 "自動系統 - 簽到失敗");
                         try {
@@ -64,7 +69,7 @@ public class AutoCheckMain {
                         }
                     }else {
                         log.error("自動系統 - 簽到成功");
-                        mailService.sendSimpleMail("@gmail.com",
+                        mailService.sendSimpleMail(EMAIL,
                                 "自動系統 - 簽到成功",
                                 "自動系統 - 簽到成功");
                         page.close();
@@ -98,7 +103,7 @@ public class AutoCheckMain {
                     boolean isNo = response.text().contains("驗證碼錯誤");
                     if(isNo){
                         log.error("自動系統 - 簽退失敗");
-                        mailService.sendSimpleMail("@gmail.com",
+                        mailService.sendSimpleMail(EMAIL,
                                 "自動系統 - 簽退失敗",
                                 "自動系統 - 簽退失敗");
                         try {
@@ -108,7 +113,7 @@ public class AutoCheckMain {
                         }
                     }else {
                         log.info("自動系統 - 簽退成功");
-                        mailService.sendSimpleMail("@gmail.com",
+                        mailService.sendSimpleMail(EMAIL,
                                 "自動系統 - 簽退成功",
                                 "自動系統 - 簽退成功");
                         page.close();

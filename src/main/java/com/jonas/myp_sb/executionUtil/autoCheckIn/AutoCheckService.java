@@ -1,4 +1,4 @@
-package com.jonas.myp_sb.autoCheckIn;
+package com.jonas.myp_sb.executionUtil.autoCheckIn;
 
 import com.jonas.myp_sb.common.RandomFun;
 import com.microsoft.playwright.Page;
