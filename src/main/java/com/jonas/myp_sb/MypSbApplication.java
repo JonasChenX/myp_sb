@@ -35,12 +35,19 @@ public class MypSbApplication {
                 "\n----------------------------------------------------------\n\t" +
                         "Application '{}' is running!\n\t" +
                         "Local: \t\t{}://localhost:{}{}\n\t" +
+                        "swagger: \t{}://localhost:{}{}/swagger-ui.html\n\t" +
                         "Profile(s): {}" +
                 "\n----------------------------------------------------------",
                 env.getProperty("spring.application.name"),
+                //Local
                 protocol,
                 serverPort,
                 contextPath,
+                //swagger
+                protocol,
+                serverPort,
+                contextPath,
+                //Profile(s)
                 env.getActiveProfiles()
         );
     }

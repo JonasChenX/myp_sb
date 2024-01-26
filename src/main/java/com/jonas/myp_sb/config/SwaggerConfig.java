@@ -17,6 +17,10 @@ import java.util.Collections;
 @EnableSwagger2
 public class SwaggerConfig {
 
+    /**
+     * 網址: {Local}/swagger-ui.html
+     */
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
