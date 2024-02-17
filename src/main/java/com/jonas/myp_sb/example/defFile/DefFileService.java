@@ -29,192 +29,73 @@ public class DefFileService {
 
     /**
      * 處理選填之sql
-     *
-     * @param sql      處理之sql
-     * @param model 前端參數
+     * @param sql   處理之sql
+     * @param model sql變數取代
+     * 邏輯:
+     *     取--optional:${變數} ... --optionalend 內容
+     *     依照model的key判斷是否有值
+     *     若沒有該key或該key的值為null空值 則把該內容則刪除
+     *     有的話繼續保留
      */
     public String filterOptionalParams(String sql, Map<String, Object> model) {
         Map<String, Object> sqlModel = toVariableModel(model);
-        TypeFactory typeFactory = objectMapper.getTypeFactory();
-        //1. 取得各 --optional start 到 end 片段
-        //2. optional 片段處理
-        //  2.1. 取得 optional 片段參數
-        //  2.2. 檢查參數都是否存在 sqlModel(考慮種類一、二共通處理方式，若有困難就寫死 同群 對應方式)
-        //      種類一： 選填
-        //      種類二： 同群排除行業別，二擇一情境
-        //    2.2.1. 存在則不做處理
-        //    2.2.2. 其中一個不存在則 [從 sql中移除該 optional 片段]
-        log.info("------filterOptionalParams-------with sqlModel:'{}',and sql:'{}' ", sqlModel.toString(), sql);
+
+        log.info("filterOptionalParams:{}", sqlModel);
         // sql 存在 --optional 才開始處理
         if (sql.contains("--optional")) {
-            // 行業代號參數處理
-            String bscd = Objects.nullSafeToString(sqlModel.get("BSCD"));
-            if (!("{}".equals(bscd) || "null".equals(bscd))) {
 
-                Map<String, Object> bscdMap = objectMapper.convertValue(sqlModel.get("BSCD"), typeFactory.constructMapType(Map.class, String.class, Object.class));
-
-                List<String> bscdList = objectMapper.convertValue(bscdMap.get("resultsArray"), typeFactory.constructCollectionType(List.class, String.class));
-                sqlModel.put("BSCD", bscdList);
-                Boolean isExclude = objectMapper.convertValue(bscdMap.get("isExclude"), Boolean.class);
-                sqlModel.put("isExclude", isExclude);
-                log.debug("sqlModel:'{}'", sqlModel.toString());
-            }
-            //重要原因代號
-            String importantChangeReasonCode = Objects.nullSafeToString(sqlModel.get("importantChangeReasonCode"));
-            if (
-                    !(
-                            "{}".equals(importantChangeReasonCode) ||
-                                    "null".equals(importantChangeReasonCode) ||
-                                    "[]".equals(importantChangeReasonCode)
-                    )
-            ) {
-                Map<String, Object> reasonCodeMap = objectMapper.convertValue(sqlModel.get("importantChangeReasonCode"), typeFactory.constructMapType(Map.class, String.class, Object.class));
-                List<String> reasonCodeList = objectMapper.convertValue(reasonCodeMap.get("resultsArray"), typeFactory.constructCollectionType(List.class, String.class));
-                sqlModel.put("importantChangeReasonCode", reasonCodeList);
-                Boolean isExclude2 = objectMapper.convertValue(reasonCodeMap.get("isExclude2"), Boolean.class);
-                sqlModel.put("isExclude2", isExclude2);
-                log.info("sqlModel:'{}'", sqlModel.toString());
-            }
-
-            log.info("---contains optional sql variable---");
             Pattern optionalPattern = Pattern.compile("(--optional.*?--optionalend)", Pattern.DOTALL | Pattern.MULTILINE);
             Matcher optionalMatcher = optionalPattern.matcher(sql);
             while (optionalMatcher.find()) {
+                String modelKey = null;
+
+                //取得optional片段
                 String matchStr = optionalMatcher.group(1);
                 log.info("matchStr:'{}'", matchStr);
-                String optionsString = StringUtils.substringBetween(matchStr, "--optional", "LEFT");
-                if (Strings.isNullOrEmpty(optionsString)) {
-                    // and為小寫時
-                    optionsString = StringUtils.substringBetween(matchStr, "--optional", "AND");
-                    if (Strings.isNullOrEmpty(optionsString)) {
-                        // and為小寫時
-                        optionsString = StringUtils.substringBetween(matchStr, "--optional", "and");
-                        if (Strings.isNullOrEmpty(optionsString)) {
-                            // optional句為having
-                            optionsString = StringUtils.substringBetween(matchStr, "--optional", "having");
-                            if (Strings.isNullOrEmpty(optionsString)) {
-                                // optional句為,
-                                optionsString = StringUtils.substringBetween(matchStr, "--optional", ",");
-                                if (Strings.isNullOrEmpty(optionsString)) {
-                                    // or為小寫
-                                    optionsString = StringUtils.substringBetween(matchStr, "--optional", "or");
-                                }
-                            }
+
+                //取得--optional: 後面的變數
+                int colonIndex = matchStr.indexOf("--optional:");
+                int newlineIndex = matchStr.indexOf("\n", colonIndex);
+                if (colonIndex != -1 && newlineIndex != -1) {
+                    modelKey = matchStr.substring(colonIndex + 11, newlineIndex).trim();
+                }
+                log.info("modelKey:{}",modelKey);
+
+                //必須要有modelKey
+                if(modelKey == null){
+                    throw new IllegalStateException("modelKey is null");
+                }
+
+                //預設刪除
+                Boolean isDel = true;
+                if(sqlModel.keySet().contains(modelKey) && sqlModel.get(modelKey) != null){
+                    //若是string 則不能為null或空值
+                    if(sqlModel.get(modelKey) instanceof String || sqlModel.get(modelKey) instanceof Number){
+                        log.info("modelKey是String或Number:{}",modelKey);
+                        String modelValueStr = String.valueOf(sqlModel.get(modelKey));
+                        if(StringUtils.isNotBlank(modelValueStr)){
+                            isDel = false;
+                        }
+                    }
+                    //若是List 則不能為null或空陣列
+                    if(sqlModel.get(modelKey) instanceof List){
+                        log.info("modelKey是List:{}",modelKey);
+                        List modelValueList = (List) sqlModel.get(modelKey);
+                        if(modelValueList.size() > 0){
+                            isDel = false;
+                        }
+                    }
+                    //若是Boolean 若為true則不刪除
+                    if(sqlModel.get(modelKey) instanceof Boolean){
+                        log.info("modelKey是Boolean:{}",modelKey);
+                        Boolean modelValueBoolean = (Boolean) sqlModel.get(modelKey);
+                        if(modelValueBoolean){
+                            isDel = false;
                         }
                     }
                 }
-                List<String> optionsList = Arrays.asList(optionsString.split(":"));
-                List<Boolean> flagList = new LinkedList<>();
-                //行業勾選sql中optional字串
-                AtomicReference<String> isExcludeOption = new AtomicReference<>("");
-                //重要原因代號勾選sql中optional字串
-                AtomicReference<String> isExclude2Option = new AtomicReference<>("");
-                //前端傳入行業勾選flag
-                AtomicReference<String> isExcludeFlag = new AtomicReference<>("init");
-                //前端傳入重要原因代號勾選flag
-                AtomicReference<String> isExclude2Flag = new AtomicReference<>("init");
-                //>0情境之sql 處理
-                AtomicReference<String> additionOption = new AtomicReference<>("");
-
-                optionsList.forEach(
-                        option -> {
-                            // 排除掉split後為空的option
-                            log.info("option:'{}'", option);
-
-                            if (!Strings.isNullOrEmpty(option)) {
-                                //行業、稅籍勾選特別處理
-                                if (option.contains("isExclude")) {
-                                    if (option.contains("2")) {
-                                        //重要原因代號
-                                        isExclude2Option.set(option);
-                                        isExclude2Flag.set(Objects.nullSafeToString(sqlModel.get("isExclude2")));
-                                    } else {
-                                        //行業代號
-                                        isExcludeOption.set(option);
-                                        isExcludeFlag.set(Objects.nullSafeToString(sqlModel.get("isExclude")));
-                                    }
-                                } else if (option.contains("!") && !option.contains("isExclude")) {
-                                    additionOption.set(option);
-                                } else {
-                                    //  一般情況
-                                    boolean containsKey = sqlModel.containsKey(option.trim());
-                                    String sqlModelValue = Objects.nullSafeToString(sqlModel.get(option.trim()));
-                                    log.info("key:{}",option.trim());
-                                    log.info("value:{}",option.trim());
-                                    log.info("sqlModelValue:'{}'", sqlModelValue);
-
-                                    // 如果有傳入此參數 且非空值與null
-                                    if (
-                                            containsKey &&
-                                                    (
-                                                            !Strings.isNullOrEmpty(sqlModelValue) &&
-                                                                    !"null".equals(sqlModelValue) &&
-                                                                    !"{}".equals(sqlModelValue) &&
-                                                                    !"[]".equals(sqlModelValue)
-                                                    )
-                                    ) {
-                                        flagList.add(true);
-                                    } else {
-                                        flagList.add(false);
-                                    }
-                                }
-                            }
-                        }
-                );
-                // 判斷參數存在flag
-                boolean flag = !flagList.contains(false);
-                if (!flag) {
-                    // 有任一參數不存在 則移除optional sql
+                if(isDel){
                     sql = StringUtils.remove(sql, matchStr);
-                    log.info("remove option:" + matchStr);
-                } else {
-                    System.err.println(additionOption);
-                    //   1.!參數處理
-                    if (!"".equals(additionOption.get())) {
-                        String addition = additionOption.get().split("!")[1].trim();
-                        if (sqlModel.get(addition) != null) {
-                            sql = StringUtils.remove(sql, matchStr);
-                        }
-                    }
-                    //   2.行業別特別處理
-                    //   當參數都存在時判斷要啟用哪一個optional(勾選、未勾選)
-
-                    // 如果isExcludeFlag 傳入為空或null
-                    if ((Strings.isNullOrEmpty(isExcludeFlag.get()) || "null".equals(isExcludeFlag.get()))) {
-                        sql = StringUtils.remove(sql, matchStr);
-                    }
-                    // 如果isExcludeFlag 傳入為false 移除 IN(:...)
-                    if (
-                            "@isExclude".equals(isExcludeOption.get()) &&
-                                    "false".equals(isExcludeFlag.get())
-                    ) {
-                        // 未勾選移除IN (:isExclude)
-                        sql = StringUtils.remove(sql, matchStr);
-                    }
-                    // 如果isExclude2Flag 傳入為false 移除 IN(:...)
-                    if (
-                            "@isExclude2".equals(isExclude2Option.get()) &&
-                                    "false".equals(isExclude2Flag.get())
-                    ) {
-                        // 未勾選移除IN (:isExclude2)
-                        sql = StringUtils.remove(sql, matchStr);
-                    }
-                    // 如果isExcludeFlag 傳入為true 移除 NOT IN(:...)
-                    if (
-                            "@!isExclude".equals(isExcludeOption.get()) &&
-                                    "true".equals(isExcludeFlag.get())
-                    ) {
-                        // 有勾選移除NOT IN (:isExclude)
-                        sql = StringUtils.remove(sql, matchStr);
-                    }
-                    // 如果isExclude2Flag 傳入為true 移除 NOT IN(:...)
-                    if (
-                            "@!isExclude2".equals(isExclude2Option.get()) &&
-                                    "true".equals(isExclude2Flag.get())
-                    ) {
-                        // 有勾選移除NOT IN (:isExclude2)
-                        sql = StringUtils.remove(sql, matchStr);
-                    }
                 }
             }
         }

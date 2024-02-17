@@ -29,8 +29,6 @@ public class deFileTest {
         this.defFileService = defFileService;
     }
 
-
-
     @Test
     public void test() throws JsonProcessingException {
         //獲取a.sql內容
@@ -40,13 +38,13 @@ public class deFileTest {
         ObjectMapper mapper = new ObjectMapper();
         String modelJson = resources.readAsString("classpath:deFile/model.json");
         ObjectNode root = (ObjectNode) mapper.readTree(modelJson);
-        ObjectNode ValueMap = (ObjectNode) root.get("model");
+        ObjectNode modelMap = (ObjectNode) root.get("model");
         Map<String, Object> ParamsMap = new HashMap<>();
-        ParamsMap.put("model", ValueMap);
+        ParamsMap.put("model", modelMap);
 
         //帶入 sql內容 和 參數
         //若該參數沒有值則會篩選掉
         String filterSql = defFileService.filterOptionalParams(sql, ParamsMap);
-        log.info(filterSql);
+        log.info("filterSql:{}",filterSql);
     }
 }
