@@ -8,7 +8,7 @@ CREATE TABLE myp.demo_test (
 );
 
 -- worker存放參數
-CREATE TABLE myp.worker_model_paramter(
+CREATE TABLE myp.worker_model_parameter(
     task_id bigint NOT NULL,
     model_id text NULL,
     parameters text NULL,

@@ -154,10 +154,6 @@ public class AcsTaskScheduler {
     }
 
     private void markTaskDetailAsDeleted(AcsTaskDetails detail) {
-//        if (AcsTaskDetails.Status.END_STATUSES.contains(detail.getStatus()) ) {
-//            throw new TaskException(MessageCodes.STS_TASK_0011_E(detail.getTaskId(), detail.getStatus().getDescription()));
-
-//        } else {
         detail.setStatus(AcsTaskDetails.Status.CANCELLED);
         detail.setEndTimestamp(Instant.now());
         detail.setDeleteMk("Y");
@@ -166,7 +162,6 @@ public class AcsTaskScheduler {
         log.info(
                 "Task {} (backed by job {}) has been marked as deleted.",
                 detail.getTaskId(), detail.getJobId());
-//        }
     }
 
     public void completeStagedTask(long taskId) {

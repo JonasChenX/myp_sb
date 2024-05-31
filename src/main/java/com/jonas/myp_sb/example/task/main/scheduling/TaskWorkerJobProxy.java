@@ -4,7 +4,10 @@ import com.jonas.myp_sb.example.task.main.context.TaskContext;
 import com.jonas.myp_sb.example.task.main.context.TaskContextAware;
 import com.jonas.myp_sb.example.task.main.context.TaskParameter;
 import com.jonas.myp_sb.example.task.main.context.TaskResult;
+import com.jonas.myp_sb.example.task.main.filter.annotations.JobProxy;
 import com.jonas.myp_sb.example.task.main.model.AcsTaskDetails;
+import com.jonas.myp_sb.example.task.main.scheduling.filter.TaskDetailClientFilter;
+import com.jonas.myp_sb.example.task.main.scheduling.filter.TaskWorkerJobMetadataLookupStrategy;
 import com.jonas.myp_sb.example.task.main.service.AcsTaskDetailsService;
 import com.jonas.myp_sb.example.task.main.worker.TaskWorker;
 import com.jonas.myp_sb.example.task.main.worker.TaskWorkerRepository;
@@ -24,12 +27,11 @@ public class TaskWorkerJobProxy {
         this.taskWorkerRepository = taskWorkerRepository;
     }
 
-//    @JobProxy(
-//            jobMetadataLookupStrategy = TaskWorkerJobMetadataLookupStrategy.class,
-//            jobFilters = { TaskDetailClientFilter.class, TaskDetailApplyStateFilter.class }
-//    )
+    @JobProxy(
+        jobMetadataLookupStrategy = TaskWorkerJobMetadataLookupStrategy.class,
+        jobFilters = { TaskDetailClientFilter.class, TaskDetailApplyStateFilter.class }
+    )
     public void perform(long taskId, JobContext jobContext) throws Exception {
-        System.err.println("77777777777");
         AcsTaskDetails detail = this.acsTaskDetailsService.findById(taskId);
 
         String workerName = detail.getType();

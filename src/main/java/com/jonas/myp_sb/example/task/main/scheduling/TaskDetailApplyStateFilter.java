@@ -30,6 +30,7 @@ public class TaskDetailApplyStateFilter implements ApplyStateFilter {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void onStateApplied(Job job, JobState oldState, JobState newState) {
+        log.info("onStateApplied");
 
         final AcsTaskDetails detail = taskDetailsService.findByJobId(job.getId().toString());
 
@@ -41,6 +42,8 @@ public class TaskDetailApplyStateFilter implements ApplyStateFilter {
     }
 
     private void updateStatus(Job job, JobState oldState, JobState newState, AcsTaskDetails detail) {
+        log.info("updateStatus oldState:{}",oldState.getName());
+        log.info("updateStatus newState:{}",newState.getName());
         if (oldState != null && (oldState.getName() == newState.getName())) {
             return;
         }

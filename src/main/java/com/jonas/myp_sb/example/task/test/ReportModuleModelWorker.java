@@ -2,6 +2,7 @@ package com.jonas.myp_sb.example.task.test;
 
 import com.jonas.myp_sb.example.task.main.context.TaskParameter;
 import com.jonas.myp_sb.example.task.main.context.TaskResult;
+import com.jonas.myp_sb.example.task.main.filter.annotations.JobMetadata;
 import com.jonas.myp_sb.example.task.main.model.AcsModelResult;
 import com.jonas.myp_sb.example.task.main.repository.AcsModelParameterRepository;
 import com.jonas.myp_sb.example.task.main.repository.AcsModelResultRepository;
@@ -50,8 +51,10 @@ public class ReportModuleModelWorker extends AbstractDataLogTaskWorker {
     // 3
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    @JobMetadata(groupId = "P", functionId = "sts102w")
     public TaskResult performWorker(long taskId, TaskParameter parameter) throws Exception {
         log.info("3.performWorker");
+        log.info("parameter:{}",parameter);
         AcsModelResult reportModuleModelResult = new AcsModelResult();
         reportModuleModelResult.setModelType("2");
         reportModuleModelResult.setResultCount(Float.valueOf(3));

@@ -36,18 +36,6 @@ public class AcsTaskManager {
     }
 
     /**
-     * 建立 Task 物件。
-     *
-     * @param parameter   Task 執行參數。
-     * @param description 工作說明。
-     * @return Task 物件。
-     */
-    @Transactional(propagation = REQUIRES_NEW)
-    public Task createTask(TaskParameter parameter, String description) {
-        return createTask(parameter, description, null);
-    }
-
-    /**
      * 指定選案樣式 ID 建立 Task 物件。
      *
      * @param parameter   Task 執行參數。
