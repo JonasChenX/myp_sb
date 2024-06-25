@@ -18,9 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-public class odsDemoBatch {
+public class OdsDemoBatch {
 
-    private final Logger log = LoggerFactory.getLogger(odsDemoBatch.class);
+    private final Logger log = LoggerFactory.getLogger(OdsDemoBatch.class);
 
     @Autowired
     DetailRepository detailRepository;
