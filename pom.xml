@@ -123,6 +123,12 @@
             <artifactId>SODS</artifactId>
             <version>1.6.2</version>
         </dependency>
+        <!-- 產PDF套件 -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.4.2</version>
+        </dependency>
         <!-- 設置其他註釋 -->
         <dependency>
             <groupId>com.intellij</groupId>
