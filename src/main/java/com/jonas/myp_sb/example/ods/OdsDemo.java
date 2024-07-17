@@ -19,14 +19,17 @@ public class OdsDemo {
     public DownloadableResource downloadFile() throws IOException {
         SpreadSheet spread = new SpreadSheet();
 
-        List<Map<String, Object>> dataList = List.of(
-                Map.of("col1", "2333344", "col2", "先生公司", "col3", "a"),
-                Map.of("col1", "999999", "col2", "先生公司2", "col3", "c")
+        List<Map<String, String>> dataList = List.of(
+                Map.of("col1", "2333344\n22222222", "col2", "先生公司", "col3", "a"),
+                Map.of("col1", "111111", "col2", "先生公司2", "col3", "c"),
+                Map.of("col1", "222222\n22222222\n22222222\n22222222\n22222222\n22222222", "col2", "先生公司3", "col3", "c"),
+                Map.of("col1", "333333\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222\n22222222", "col2", "先生公司4", "col3", "c"),
+                Map.of("col1", "555555\n22222222\n22222222", "col2", "先生公司5", "col3", "c")
         );
 
         List<String> keyList = List.of("col1", "col2", "col3");
 
-        Sheet sheet = setSheet(dataList,keyList, "選案模型選案列選清單_0");
+        Sheet sheet = setSheet(dataList,keyList, "sheet_測試");
 
 
         spread.appendSheet(sheet);
@@ -37,7 +40,7 @@ public class OdsDemo {
 
         //檔案名稱
         String strDate = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
-        String fileName = "選案模型選案列選清單_" + strDate + ".ods";
+        String fileName = "測試ODS表單_" + strDate + ".ods";
 
         ByteArrayResource resource = new ByteArrayResource(outputStream.toByteArray());
         DownloadableResource downloadableResource = new DownloadableResource(resource, fileName);
@@ -52,15 +55,31 @@ public class OdsDemo {
      * @param sheetName 標籤名稱
      * @return Sheet物件
      */
-    private Sheet setSheet(List<Map<String, Object>> dataList, List<String> keyList, String sheetName) {
+    private Sheet setSheet(List<Map<String, String>> dataList, List<String> keyList, String sheetName) {
         //添加column 和 data
         ArrayList<Object> bodyArr = new ArrayList<>(keyList);
+
+        //紀錄每筆資料的行數
+        int[][] dataLinesLog = new int[dataList.size()][keyList.size()];
+
         //新增sheet
-        dataList.forEach(map1 -> {
-            keyList.forEach(column -> {
-                bodyArr.add(map1.get(column));
-            });
-        });
+        for (int i = 0; i < dataList.size(); i++) {
+            Map<String, String> data = dataList.get(i);
+            for (int j = 0; j < keyList.size(); j++) {
+                String column = keyList.get(j);
+                String value = data.get(column);
+                bodyArr.add(value);
+
+                dataLinesLog[i][j] = data.get(column) != null ? value.split("\n").length : 1;
+            }
+        }
+
+        //紀錄每一行 的最大行數
+        ArrayList<Integer> rowLinesMax = new ArrayList<>();
+        for (int[] row : dataLinesLog) {
+            int max = Arrays.stream(row).max().orElseThrow();
+            rowLinesMax.add(max);
+        }
 
         int rows = dataList.size() + 1;
         int columns = keyList.size();
@@ -69,9 +88,7 @@ public class OdsDemo {
 
         //加在第一欄位
         sheet.insertRowBefore(0);
-        ArrayList<String> headerArr = new ArrayList<>();
-        headerArr.add("test");
-        sheet.getRange(0, 0).setValues(headerArr.toArray());
+        sheet.getRange(0, 0).setValues(new String[]{"標題"});
 
         //處理第一個row
         //getRange 的參數(起始row,起始column,數量row,數量colum)
@@ -100,10 +117,15 @@ public class OdsDemo {
         styleByBorders.setBorders(borders);
         dataRange.setStyle(styleByBorders);
 
-        //設定高度(第一個row)
+        //設定高度(第一個row 標題)
         sheet.setRowHeights(0,1,12D);
-        //設定高度(第二個row之後)
-        sheet.setRowHeights(1,rows,8D);
+        //設定高度(第二個row 欄位)
+        sheet.setRowHeights(1,1,8D);
+        //設定高度(第三個row 資料)
+        for (int i = 0; i < rowLinesMax.size(); i++) {
+            Double height = (rowLinesMax.get(i) * 4.1D) + 1D;
+            sheet.setRowHeight(i + 2, height);
+        }
         //設定寬度
         sheet.setColumnWidths(0, columns, 50D);
 
