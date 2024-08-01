@@ -42,9 +42,9 @@ public class DefFileService {
 
         log.info("filterOptionalParams:{}", sqlModel);
         // sql 存在 --optional 才開始處理
-        if (sql.contains("--optional")) {
+        if (sql.contains("-- optional")) {
 
-            Pattern optionalPattern = Pattern.compile("(--optional.*?--optionalend)", Pattern.DOTALL | Pattern.MULTILINE);
+            Pattern optionalPattern = Pattern.compile("(-- optional.*?-- optionalend)", Pattern.DOTALL | Pattern.MULTILINE);
             Matcher optionalMatcher = optionalPattern.matcher(sql);
             while (optionalMatcher.find()) {
                 String modelKey = null;
@@ -54,10 +54,10 @@ public class DefFileService {
                 log.info("matchStr:'{}'", matchStr);
 
                 //取得--optional: 後面的變數
-                int colonIndex = matchStr.indexOf("--optional:");
+                int colonIndex = matchStr.indexOf("-- optional:");
                 int newlineIndex = matchStr.indexOf("\n", colonIndex);
                 if (colonIndex != -1 && newlineIndex != -1) {
-                    modelKey = matchStr.substring(colonIndex + 11, newlineIndex).trim();
+                    modelKey = matchStr.substring(colonIndex + 12, newlineIndex).trim();
                 }
                 log.info("modelKey:{}",modelKey);
 
@@ -98,6 +98,31 @@ public class DefFileService {
                     sql = StringUtils.remove(sql, matchStr);
                 }
             }
+        }
+        return sql;
+    }
+
+
+    public String addWhereParams(String sql, Map<String, Object> model) {
+        Map<String, Object> sqlModel = toVariableModel(model);
+
+
+        if (sql.contains("-- addWhere")) {
+            Pattern addWherePattern = Pattern.compile("-- addWhere:(.*?)-- addWhereEnd", Pattern.DOTALL | Pattern.MULTILINE);
+            Matcher addWhereMatcher = addWherePattern.matcher(sql);
+            StringBuffer sb = new StringBuffer();
+
+            while (addWhereMatcher.find()) {
+                String addWhereKey = addWhereMatcher.group(1).trim();
+                log.info("addWhereKey:{}", addWhereKey);
+                String replacement = "";
+                if (sqlModel.containsKey(addWhereKey) && sqlModel.get(addWhereKey) != null) {
+                    replacement = sqlModel.get(addWhereKey).toString();
+                }
+                addWhereMatcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
+            }
+            addWhereMatcher.appendTail(sb);
+            sql = sb.toString();
         }
         return sql;
     }

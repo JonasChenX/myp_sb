@@ -45,6 +45,7 @@ public class deFileTest {
         //帶入 sql內容 和 參數
         //若該參數沒有值則會篩選掉
         String filterSql = defFileService.filterOptionalParams(sql, ParamsMap);
-        log.info("filterSql:{}",filterSql);
+        String addWhereSql = defFileService.addWhereParams(filterSql, ParamsMap);
+        log.info("addWhereSql:{}", addWhereSql);
     }
 }

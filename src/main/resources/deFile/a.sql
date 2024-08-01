@@ -2,31 +2,33 @@ select a,b,c,d,e,f,g,h,i
 from demo_table
 where 1=1
     and a in (:orgCd)
+    -- addWhere:addSql
+    -- addWhereEnd
 
-    --optional:taxRtnTp
+    -- optional:taxRtnTp
     and b in (:taxRtnTp)
-    --optionalend
+    -- optionalend
 
-    --optional:stkLstOtcMk
+    -- optional:stkLstOtcMk
     and c = :stkLstOtcMk
-    --optionalend
+    -- optionalend
 
-    --optional:ttlSSaleAmt
+    -- optional:ttlSSaleAmt
     and i = :ttlSSaleAmt
-    --optionalend
+    -- optionalend
 
-    --optional:trdRnk
+    -- optional:trdRnk
     and d = :trdRnk
-    --optionalend
+    -- optionalend
 
-    --optional:isGoodMk
+    -- optional:isGoodMk
     and e = :isGoodMk
-    --optionalend
+    -- optionalend
 
-    --optional:isAplRglr
+    -- optional:isAplRglr
     and f = :isAplRglr
-    --optionalend
+    -- optionalend
 
-    --optional:isClsMk
+    -- optional:isClsMk
     and g = :isClsMk
-    --optionalend
+    -- optionalend

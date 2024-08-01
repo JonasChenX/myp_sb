@@ -9,6 +9,7 @@
     "ttlSSaleAmt": 100,
     "isGoodMk": true,
     "isAplRglr": false,
-    "isClsMk": ""
+    "isClsMk": "",
+    "addSql": " and demo_table.a like '%11%' "
   }
 }
