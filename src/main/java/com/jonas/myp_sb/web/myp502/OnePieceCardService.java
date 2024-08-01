@@ -3,9 +3,8 @@ package com.jonas.myp_sb.web.myp502;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonas.myp_sb.example.defFile.DefFileService;
 import com.jonas.myp_sb.example.ioDemo.Resources;
-import com.jonas.myp_sb.web.myp502.dto.RequestCardInfoDTO;
-import com.jonas.myp_sb.web.myp502.dto.ResponseCardInfoDTO;
-import com.jonas.myp_sb.web.myp502.dto.ResponseCodeOptionDTO;
+import com.jonas.myp_sb.web.myp502.dto.*;
+import com.jonas.myp_sb.web.myp502.enums.effectEnum;
 import com.jonas.myp_sb.web.myp502.model.OnePieceCardInfo;
 import com.jonas.myp_sb.web.myp502.model.OnepieceCardProductInfo;
 import com.jonas.myp_sb.web.myp502.repository.OnePieceCardInfoRepository;
@@ -70,9 +69,24 @@ public class OnePieceCardService {
         return namedParameterJdbcTemplate.queryForList(getAttributeOptionSQL, new HashMap<>());
     }
 
-    public List getFeatureOption(){
-        String getAttributeOptionSQL = resources.readAsString("classpath:myp502/getFeatureOption.sql");
-        return namedParameterJdbcTemplate.queryForList(getAttributeOptionSQL, new HashMap<>());
+    public List<ResponseFeatureOptionDTO> getFeatureOption(){
+        String getFeatureOptionSQL = resources.readAsString("classpath:myp502/getFeatureOption.sql");
+        List<Map<String, Object>> featureOptionList = namedParameterJdbcTemplate.queryForList(getFeatureOptionSQL, new HashMap<>());
+        return featureOptionList.stream().map(item -> {
+            ResponseFeatureOptionDTO responseFeatureOptionDTO = new ResponseFeatureOptionDTO();
+            responseFeatureOptionDTO.setFeatureName(String.valueOf(item.get("featureOption")));
+            responseFeatureOptionDTO.setFeatureCode("%" + item.get("featureOption") + "%");
+            return responseFeatureOptionDTO;
+        }).collect(Collectors.toList());
+    }
+
+    public List<ResponseEffectOptionDTO> getEffectOption(){
+        return Arrays.stream(effectEnum.values()).map(item -> {
+            ResponseEffectOptionDTO responseEffectOptionDTO = new ResponseEffectOptionDTO();
+            responseEffectOptionDTO.setEffectCode(item.getEffectCode());
+            responseEffectOptionDTO.setEffectName(item.getText());
+            return responseEffectOptionDTO;
+        }).collect(Collectors.toList());
     }
 
     public List<ResponseCardInfoDTO> getCardInfoDTOList(RequestCardInfoDTO requestCardInfoDTO){

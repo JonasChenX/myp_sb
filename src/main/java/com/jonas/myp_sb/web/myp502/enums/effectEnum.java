@@ -36,9 +36,9 @@ public enum effectEnum {
     C2("C2","速攻"," and oci.effect like '%【速攻】%' "),
     C3("C3","雙重攻擊"," and oci.effect like '%【ダブルアタック】%' "),
     C4("C4","消失"," and oci.effect like '%【バニッシュ】%' "),
-    EE("C1","抽牌"," and oci.effect like '%枚を引く%' "),
-    D1("B1","不能發動阻擋"," and oci.effect like '%【ブロッカー】を発動%' "),
-    FF("C2","翻牌找牌","  ")
+    D1("D1","抽牌"," and oci.effect like '%枚を引く%' "),
+    D2("D2","不能發動阻擋"," and oci.effect like '%【ブロッカー】を発動%' "),
+    D3("D3","翻牌找牌","  ")
     ;
     private String effectCode;
     private String text;

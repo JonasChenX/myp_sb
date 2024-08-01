@@ -49,6 +49,10 @@ WITH ranked_info AS (
         and oci.counter = :counter
         -- optionalend
 
+        -- optional:isCounterForNull
+        and oci.counter is null
+        -- optionalend
+
         /* 力量 */
         -- optional:powerStart
         and oci.power between :powerStart and :powerEnd

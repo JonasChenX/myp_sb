@@ -15,6 +15,7 @@ public class RequestCardInfoDTO {
     private String cost;
     private String isTriggerEvent;
     private String isDistinct;
+    private String isCounterForNull;
 
     public String getCode() {
         return code;
@@ -128,6 +129,14 @@ public class RequestCardInfoDTO {
         this.isDistinct = isDistinct;
     }
 
+    public String getIsCounterForNull() {
+        return isCounterForNull;
+    }
+
+    public void setIsCounterForNull(String isCounterForNull) {
+        this.isCounterForNull = isCounterForNull;
+    }
+
     @Override
     public String toString() {
         return "RequestCardInfoDTO{" +
@@ -145,6 +154,7 @@ public class RequestCardInfoDTO {
                 ", cost='" + cost + '\'' +
                 ", isTriggerEvent='" + isTriggerEvent + '\'' +
                 ", isDistinct='" + isDistinct + '\'' +
+                ", isCounterForNull='" + isCounterForNull + '\'' +
                 '}';
     }
 }

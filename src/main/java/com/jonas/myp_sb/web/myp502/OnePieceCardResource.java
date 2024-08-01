@@ -4,6 +4,7 @@ import com.jonas.myp_sb.annotation.LogAnnotation;
 import com.jonas.myp_sb.web.myp502.dto.RequestCardInfoDTO;
 import com.jonas.myp_sb.web.myp502.dto.ResponseCardInfoDTO;
 import com.jonas.myp_sb.web.myp502.dto.ResponseCodeOptionDTO;
+import com.jonas.myp_sb.web.myp502.dto.ResponseEffectOptionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,13 @@ public class OnePieceCardResource {
     @LogAnnotation(methodName = "取得屬性選項(onePieceCard)")
     public List getAttributeOption(){
         return onePieceCardService.getAttributeOption();
+    }
+
+    //取得屬性選項
+    @GetMapping("/getEffectOption")
+    @LogAnnotation(methodName = "取得屬性選項(onePieceCard)")
+    public List<ResponseEffectOptionDTO> getEffectOption(){
+        return onePieceCardService.getEffectOption();
     }
 
 }
