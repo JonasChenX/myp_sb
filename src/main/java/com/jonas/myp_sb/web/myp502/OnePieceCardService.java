@@ -133,7 +133,9 @@ public class OnePieceCardService {
         if(!Objects.isNull(cardInfo.get("health"))){
             responseCardInfoDTO.setHealth(String.valueOf(cardInfo.get("health")));
         }
-        responseCardInfoDTO.setAttribute(List.of(String.valueOf(cardInfo.get("attribute")).split(",")));
+        if(!Objects.isNull(cardInfo.get("attribute"))){
+            responseCardInfoDTO.setAttribute(List.of(String.valueOf(cardInfo.get("attribute")).split(",")));
+        }
         if(!Objects.isNull(cardInfo.get("power"))){
             responseCardInfoDTO.setPower(String.valueOf(cardInfo.get("power")));
         }
