@@ -68,7 +68,7 @@ public class DefFileService {
 
                 //預設刪除
                 Boolean isDel = true;
-                if(sqlModel.keySet().contains(modelKey) && sqlModel.get(modelKey) != null){
+                if(sqlModel.keySet().contains(modelKey) && sqlModel.get(modelKey) != null && !"null".equals(sqlModel.get(modelKey))){
                     //若是string 則不能為null或空值
                     if(sqlModel.get(modelKey) instanceof String || sqlModel.get(modelKey) instanceof Number){
                         log.info("modelKey是String或Number:{}",modelKey);
