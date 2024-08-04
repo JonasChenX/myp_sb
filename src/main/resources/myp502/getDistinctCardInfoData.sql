@@ -52,6 +52,9 @@ WITH ranked_info AS (
 
         /* 反擊 */
         -- optional:counter
+        -- if:[isCounterForNull]
+        and oci.counter is null
+        -- else
         and oci.counter = :counter
         -- optionalend
 

@@ -50,11 +50,10 @@ WHERE 1=1
 
     /* 反擊 */
     -- optional:counter
-    and oci.counter = :counter
-    -- optionalend
-
-    -- optional:isCounterForNull
+    -- if:[isCounterForNull]
     and oci.counter is null
+    -- else
+    and oci.counter = :counter
     -- optionalend
 
     /* 力量 */
