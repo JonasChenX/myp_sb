@@ -18,6 +18,12 @@ where 1=1
     -- optionalend
 
     -- optional:trdRnk
+    -- if:[12345]
+    and b is null
+    -- else
+    -- if:[1231]
+    and b is not null
+    -- else
     and d = :trdRnk
     -- optionalend
 

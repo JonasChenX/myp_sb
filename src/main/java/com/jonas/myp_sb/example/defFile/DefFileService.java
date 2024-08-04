@@ -96,6 +96,8 @@ public class DefFileService {
                 }
                 if(isDel){
                     sql = StringUtils.remove(sql, matchStr);
+                }else {
+                    sql = handleConditionalParts(sql, matchStr, String.valueOf(sqlModel.get(modelKey)));
                 }
             }
         }
@@ -126,6 +128,42 @@ public class DefFileService {
         }
         return sql;
     }
+
+    private String handleConditionalParts(String sql, String matchStr, String modelValue) {
+        //判斷if
+        if (sql.contains("-- if:")) {
+            //找匹配if else中的字串
+            Pattern ifPattern = Pattern.compile("(-- if.*?-- else)", Pattern.DOTALL | Pattern.MULTILINE);
+            Matcher ifMatcher = ifPattern.matcher(matchStr);
+            String matchStrNew = matchStr;
+            while (ifMatcher.find()) {
+                String condition = null;
+                String ifMatchStr = ifMatcher.group(1);
+                int colonIndexByIf = ifMatchStr.indexOf("-- if:[");
+                int newlineIndexByIf = ifMatchStr.indexOf("]\n", colonIndexByIf);
+                if (colonIndexByIf != -1 && newlineIndexByIf != -1) {
+                    condition = ifMatchStr.substring(colonIndexByIf + 7, newlineIndexByIf).trim();
+                }
+                //若modelKey的值相同 則把else optionalend中的刪除
+                if (condition != null && condition.equals(modelValue)) {
+                    if (sql.contains("-- else")) {
+                        Pattern elsePattern = Pattern.compile("(-- else.*?-- optionalend)", Pattern.DOTALL | Pattern.MULTILINE);
+                        Matcher elseMatcher = elsePattern.matcher(matchStrNew);
+
+                        while (elseMatcher.find()) {
+                            String elseMatchStr = elseMatcher.group(1);
+                            sql = StringUtils.remove(sql, elseMatchStr);
+                        }
+                    }
+                } else {
+                    matchStrNew = StringUtils.remove(matchStrNew, ifMatchStr);
+                    sql = StringUtils.remove(sql, ifMatchStr);
+                }
+            }
+        }
+        return sql;
+    }
+
 
     private Map<String, Object> toVariableModel(Map<String, Object> defValue){
         Map<String, Object> sqlModel = new HashMap<String, Object>();
